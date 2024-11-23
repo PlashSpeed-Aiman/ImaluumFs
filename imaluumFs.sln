@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "imaluumFs.API", "imaluumFs.API\imaluumFs.API.fsproj", "{3786D70A-FD78-441F-88C5-8320D314241F}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "imaluumFs.Application", "imaluumFs.Application\imaluumFs.Application.fsproj", "{C0007ACE-4D84-4B0A-B03B-4465E2C0C159}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3786D70A-FD78-441F-88C5-8320D314241F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3786D70A-FD78-441F-88C5-8320D314241F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3786D70A-FD78-441F-88C5-8320D314241F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3786D70A-FD78-441F-88C5-8320D314241F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0007ACE-4D84-4B0A-B03B-4465E2C0C159}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0007ACE-4D84-4B0A-B03B-4465E2C0C159}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0007ACE-4D84-4B0A-B03B-4465E2C0C159}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0007ACE-4D84-4B0A-B03B-4465E2C0C159}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
