@@ -1,4 +1,6 @@
 ﻿namespace imaluumFs.Application
+open System.Net.Http
+open AngleSharp.Html.Parser
 open Microsoft.FSharp.Collections
 open AngleSharp.Dom
 
@@ -7,7 +9,6 @@ type CourseDetails = {Code:string;Section:string;Name:string;CreditHour:string;D
 
 module AlbiruniScraper =
     
-   
     let scrapeTotalPages (document:IDocument) =
         let pageRow = document.QuerySelector("body > table:nth-child(4) > tbody > tr > td") |> _.QuerySelectorAll("*") |> List.ofSeq
         let pageRow = pageRow |> List.map (fun x-> x.InnerHtml)
@@ -33,8 +34,36 @@ module AlbiruniScraper =
                         | _ -> Seq.rev tables |> Seq.tail |> fun x-> x |> Seq.removeAt (Seq.length x - 1) |> fun x-> x |> Seq.removeAt (Seq.length x - 1)
                                 |> Seq.map(fun x -> x.QuerySelectorAll("td"))
                                 |> Seq.map (fun x -> scrapeSubject x)
-        Some results
+        results
         
-    
+    let scrapeWebsite (client:HttpClient) (baseUrl: string) (pageCount: int) (kuliyyah: string) (semester: string) (session: string) (ctype: string) = 
+        let pageCount = match pageCount with
+                        | 0 -> 1
+                        | _ -> pageCount
+        async {            
+            let! results = 
+                [1..pageCount]
+                |> List.map (fun i ->
+                    async {
+                        let url = baseUrl + $"&view={50*i}" + kuliyyah + semester + session + ctype
+                        try 
+                            let! response = client.GetAsync(url) |> Async.AwaitTask
+                            response.EnsureSuccessStatusCode() |> ignore
+                            
+                            let! content = response.Content.ReadAsStringAsync() |> Async.AwaitTask
+                            let document = HtmlParser().ParseDocument(content)
+                            return scrapeTable document
+                        with 
+                        | ex -> 
+                            printfn $"Error scraping {url}: {ex.Message}"
+                            return []
+                    }
+                )
+                |> Async.Parallel
+            
+            return results 
+            |> Seq.collect id // Flatten results
+            |> Seq.toList
+        }
     
       

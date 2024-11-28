@@ -5,6 +5,7 @@ open System.Collections.Generic
 open System.IO
 open System.Linq
 open System.Threading.Tasks
+open FSharp.Control.Reactive
 open Microsoft.AspNetCore
 open Microsoft.AspNetCore.Builder
 open Microsoft.AspNetCore.Hosting
@@ -26,7 +27,6 @@ module Program =
         builder.Services.AddEndpointsApiExplorer()
         builder.Services.AddSwaggerGen()
         builder.Services.AddHttpClient();
-
         let app = builder.Build()
         app.UseCors(fun options ->
                         options
