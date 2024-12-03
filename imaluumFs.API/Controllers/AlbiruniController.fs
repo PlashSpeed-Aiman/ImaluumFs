@@ -28,13 +28,11 @@ type AlbiruniController(logger : ILogger<AlbiruniController>) =
                 let ctype = $"&ctype=<"
                 
                 let url = baseUrl + view + kuliyyah + semester + session + ctype
-                 
                 let task = task{
                     let! res = new HttpClient() |> fun x-> x.GetAsync (url) 
                     let! file = res.Content.ReadAsStringAsync()
                     return file
                 }
-                
                 let! res =  task |> Async.AwaitTask
                 
                 let document = HtmlParser().ParseDocument(res)
@@ -47,21 +45,15 @@ type AlbiruniController(logger : ILogger<AlbiruniController>) =
         
     [<HttpGet;Route("page-count")>]
     member this.PageCount(link : string) : IActionResult =
-        let task = task{
-            let! res = new HttpClient() |> fun x-> x.GetAsync (link)
-            let file = res.Content.ReadAsStringAsync()
-            return! file
+        let res =async{ 
+            let task = task{
+                let! res = new HttpClient() |> fun x-> x.GetAsync (link)
+                let file = res.Content.ReadAsStringAsync()
+                return! file
+            }
+            let! stringAsync = task |> Async.AwaitTask
+            let document = HtmlParser().ParseDocument(stringAsync)
+            return AlbiruniScraper.scrapeTotalPages document
         }
-       
-        let stringAsync = task |> Async.AwaitTask
-      
-        let document = HtmlParser().ParseDocument(task.Result)
-        AlbiruniScraper.scrapeTotalPages document |> fun x -> this.Ok(x)
+        res |> Async.RunSynchronously |> fun x-> this.Ok(x)
            
-    [<HttpGet("stream")>]
-    member this.GetStream() =
-        let _messageSubject = new System.Reactive.Subjects.Subject<string>()
-        _messageSubject
-        |> Observable.throttle (TimeSpan.FromSeconds(1.0))
-        |> Observable.map (fun msg -> {| message = msg |})
-        |> this.Ok
